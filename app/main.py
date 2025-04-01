@@ -26,7 +26,6 @@ async def get_status():
 async def get_repair_bay():
 
     html_content = f"""
-    <!DOCTYPE html>
     <div class="anchor-point">"ENG-04"</div>
     """
     
