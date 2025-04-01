@@ -14,7 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Primera llamada: GET /status
 @app.get("/status")
 async def get_status():
