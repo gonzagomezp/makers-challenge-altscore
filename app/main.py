@@ -1,6 +1,5 @@
 from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, HTTPException, Query
-import math
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
