@@ -52,14 +52,16 @@ if delta_p == 0:
      raise ValueError("P1 and P2 cannot be the same.")
 
 # Liquid line: v = m_liquid * P + c_liquid
-m_liquid = (V2_LIQUID - V1_LIQUID) / delta_p
+m_liquid = (V2_LIQUID - V1_LIQUID) / delta_p # Slope
 c_liquid = V1_LIQUID - m_liquid * P1
 
 # Vapor line: v = m_vapor * P + c_vapor
-m_vapor = (V2_VAPOR - V1_VAPOR) / delta_p
+m_vapor = (V2_VAPOR - V1_VAPOR) / delta_p # Slope
+# Note: The vapor line is not a straight line in reality, but for the sake of this
+# calculation, we are using a linear approximation.
+# This is a simplification for the purpose of this example.
+# The intercept is calculated similarly to the liquid line.
 c_vapor = V1_VAPOR - m_vapor * P1
-
-# --- API Endpoint ---
 
 @app.get("/phase-change-diagram")
 async def get_phase_change_data(
