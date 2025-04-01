@@ -1,6 +1,6 @@
-from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException, Query
+import math
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -37,5 +37,51 @@ async def get_repair_bay():
 async def teapot():
     raise HTTPException(status_code=418, detail="I'm a teapot")
 
-# Para correr el servidor, se ejecuta:
-# uvicorn app:app --reload
+# --- Define the known points from the diagram ---
+P1 = 0.05  # MPa
+V1_LIQUID = 0.00105 # m^3/kg
+V1_VAPOR = 30.00    # m^3/kg
+
+P2 = 10.0   # MPa (Critical Pressure)
+V2_LIQUID = 0.0035  # m^3/kg (Critical Volume)
+V2_VAPOR = 0.0035   # m^3/kg (Critical Volume)
+
+# --- Pre-calculate slopes and intercepts for the linear equations ---
+delta_p = P2 - P1
+if delta_p == 0:
+     raise ValueError("P1 and P2 cannot be the same.")
+
+# Liquid line: v = m_liquid * P + c_liquid
+m_liquid = (V2_LIQUID - V1_LIQUID) / delta_p
+c_liquid = V1_LIQUID - m_liquid * P1
+
+# Vapor line: v = m_vapor * P + c_vapor
+m_vapor = (V2_VAPOR - V1_VAPOR) / delta_p
+c_vapor = V1_VAPOR - m_vapor * P1
+
+# --- API Endpoint ---
+
+@app.get("/phase-change-diagram")
+async def get_phase_change_data(
+    pressure: float = Query(..., gt=0, description="Pressure in mega pascals (MPa)")
+):
+    """
+    Calculates the specific volume for saturated liquid and saturated vapor
+    using linear equations derived from the P1(0.05 MPa) and P2(10 MPa) points.
+    The calculation uses interpolation/extrapolation for ANY positive input pressure.
+    """
+
+    # --- Direct Calculation using linear equations ---
+    # v = mP + c
+    specific_volume_liquid = m_liquid * pressure + c_liquid
+    specific_volume_vapor = m_vapor * pressure + c_vapor
+
+    # Ensure non-negative volumes (safety check, especially for extrapolation)
+    specific_volume_liquid = max(0, specific_volume_liquid)
+    specific_volume_vapor = max(0, specific_volume_vapor)
+
+    # --- Response ---
+    return {
+        "specific_volume_liquid": round(specific_volume_liquid, 6),
+        "specific_volume_vapor": round(specific_volume_vapor, 6)
+    }
