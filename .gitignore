@@ -1,0 +1,7 @@
+venv/
+/venv/
+venv/*
+.env
+ingenieriadesoftware3-8381721fd641.json
+cantinaucc-8cadf931f557.json
+__pycache__/
