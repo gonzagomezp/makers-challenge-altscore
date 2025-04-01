@@ -25,12 +25,12 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t gonzagomezp/makers-challenge-altscore:latest .
-        docker push gonzagomezp/makers-challenge-altscore:latest
+        docker build -t gonzagomezp1/makers-challenge-altscore:latest .
+        docker push gonzagomezp1/makers-challenge-altscore:latest
 
     - name: Get Docker image digest
       id: get_digest
-      run: echo "DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' gonzagomezp/makers-challenge-altscore:latest)" >> $GITHUB_ENV
+      run: echo "DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' gonzagomezp1/makers-challenge-altscore:latest)" >> $GITHUB_ENV
 
     - name: Logout from Docker Hub
       run: docker logout
