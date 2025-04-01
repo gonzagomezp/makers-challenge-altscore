@@ -27,14 +27,7 @@ async def get_repair_bay():
 
     html_content = f"""
     <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Repair</title>
-    </head>
-    <body>
     <div class="anchor-point">"ENG-04"</div>
-    </body>
-    </html>
     """
     
     return HTMLResponse(content=html_content)
